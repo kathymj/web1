@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos en Carrito</title>
+  <style>
+    body {
+      background-image: url(../image/medicina2.jpg);
+      font-family: Arial, sans-serif;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .producto {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px;
+      padding: 10px;
+      background-color: #f4f4f4;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .producto img {
+      width: 100px;
+      height: 100px;
+    }
+    .producto-info {
+      flex-grow: 1;
+      margin-left: 20px;
+    }
+    .producto-info h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .producto-info p {
+      margin: 5px 0;
+    }
+    .producto button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .producto button:hover {
+      background-color: #45a049;
+    }
+    #cart {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    #cart table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #cart table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    #cart button {
+      padding: 10px 20px;
+      background-color: #ff4747;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #cart button:hover {
+      background-color: #ff2a2a;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    #confirm-btn {
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      display: none;
+      margin-top: 30px;
+    }
+    #confirm-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Farmacia Online</h1>
+
+<div class="producto">
+  <img src="../image/ranitidina.jpg" alt="Ranitidina">
+  <div class="producto-info">
+    <h3>Ranitidina - Q15</h3>
+    <p>Para la acidez estomacal y trastornos digestivos.</p>
+    <button onclick="addToCart('Ranitidina', 15)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div class="producto">
+  <img src="../image/paracetamol.jpg" alt="Paracetamol">
+  <div class="producto-info">
+    <h3>Paracetamol - Q10</h3>
+    <p>Alivio de dolores leves y reducción de fiebre.</p>
+    <button onclick="addToCart('Paracetamol', 10)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div class="producto">
+  <img src="../image/ibufrofeno.jpg" alt="Ibuprofeno">
+  <div class="producto-info">
+    <h3>Ibuprofeno - Q20</h3>
+    <p>Antiinflamatorio y analgésico.</p>
+    <button onclick="addToCart('Ibuprofeno', 20)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div class="producto">
+  <img src="../image/diclofenaco.jpg" alt="Diclofenaco">
+  <div class="producto-info">
+    <h3>Diclofenaco - Q25</h3>
+    <p>Alivio de dolores musculares y articulares.</p>
+    <button onclick="addToCart('Diclofenaco', 25)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div class="producto">
+  <img src="../image/amoxicilina.jpg" alt="Amoxicilina">
+  <div class="producto-info">
+    <h3>Amoxicilina - Q20</h3>
+    <p>Tratamiento de infecciones bacterianas.</p>
+    <button onclick="addToCart('Amoxicilina', 20)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div class="producto">
+  <img src="../image/calcio12.jpg" alt="Calcio12">
+  <div class="producto-info">
+    <h3>Calcio - Q30</h3>
+    <p>Fortalece huesos y dientes.</p>
+    <button onclick="addToCart('Calcio', 30)">Agregar al carrito</button>
+  </div>
+</div>
+
+<div id="cart">
+  <h3>Carrito de Compras</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody id="cart-items">
+      <!-- Items will be added here -->
+    </tbody>
+  </table>
+  <div class="total">
+    Total: Q <span id="total-price">0</span>
+  </div>
+  <button onclick="clearCart()">Vaciar Carrito</button>
+  <button id="confirm-btn" onclick="confirmOrder()">Confirmar Pedido</button>
+</div>
+
+<script>
+  let cart = [];
+
+  function addToCart(product, price) {
+    let productIndex = cart.findIndex(item => item.product === product);
+    
+    if (productIndex === -1) {
+      cart.push({ product, price, quantity: 1 });
+    } else {
+      cart[productIndex].quantity++;
+    }
+
+    updateCart();
+  }
+
+  function updateCart() {
+    let cartContent = '';
+    let total = 0;
+
+    cart.forEach(item => {
+      cartContent += `
+        <tr>
+          <td>${item.product}</td>
+          <td>${item.quantity}</td>
+          <td>Q${item.price * item.quantity}</td>
+          <td><button onclick="removeFromCart('${item.product}')">Eliminar</button></td>
+        </tr>
+      `;
+      total += item.price * item.quantity;
+    });
+
+    document.getElementById("cart-items").innerHTML = cartContent;
+    document.getElementById("total-price").textContent = total;
+
+    // Mostrar el botón de confirmar pedido si hay productos
+    if (cart.length > 0) {
+      document.getElementById("confirm-btn").style.display = "block";
+    } else {
+      document.getElementById("confirm-btn").style.display = "none";
+    }
+  }
+
+  function removeFromCart(product) {
+    cart = cart.filter(item => item.product !== product);
+    updateCart();
+  }
+
+  function clearCart() {
+    cart = [];
+    updateCart();
+  }
+
+  function confirmOrder() {
+    if (cart.length === 0) {
+      alert("No hay productos en el carrito para confirmar.");
+      return;
+    }
+
+    let orderDetails = "Detalles del Pedido:\n\n";
+    cart.forEach(item => {
+      orderDetails += `${item.product} - Q${item.price} x ${item.quantity} = Q${item.price * item.quantity}\n`;
+    });
+    orderDetails += `\nTotal: Q${document.getElementById("total-price").textContent}`;
+    
+    if (confirm(`¿Estás seguro que deseas confirmar este pedido?\n\n${orderDetails}`)) {
+      alert("¡Gracias por tu compra! Tu pedido se ha realizado con éxito. ¡Esperamos verte de nuevo !");
+      clearCart(); // Limpiar el carrito después de confirmar
+    }
+  }
+</script>
+
+</body>
+</html>
+
+  
